@@ -11,14 +11,14 @@ app.use(express.static('public'));
 // This is the API endpoint students' messages are sent to
 app.post('/chat', async(req, res) => {
   try {
-    const { message } = req.body;
+    const { message, history = [] } = req.body;
 
     if (!message || message.trim() === '') {
       return res.status(400).json({
         reply: "Please type a question."
       });
     }
-    const response = await getAdvisorResponse(message);
+    const response = await getAdvisorResponse(message, history);
 
     // Handle both string and object responses
     const reply = typeof response === 'string'

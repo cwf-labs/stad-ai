@@ -23,10 +23,16 @@ End responses by asking if there is anything else you can help with.
 Never make up information not found in the context.
 `;
 
-async function getAdvisorResponse(question) {
+async function getAdvisorResponse(question, history = []) {
   try {
+    // Build a context-aware search query
+    // Combine last exchange + current question for better search
+    const searchQuery = history.length > 0
+      ? `${history[history.length - 2]?.content || ''} ${question}`
+      : question;
+
     // Step 1: Search for relevant knowledge chunks
-    const relevantChunks = await searchKnowledge(question, 3);
+    const relevantChunks = await searchKnowledge(searchQuery, 3);
 
     // Step 2: Handle case where no relevant chunks found
     if (relevantChunks.length === 0) {
@@ -42,13 +48,25 @@ async function getAdvisorResponse(question) {
       `)
       .join(`\n---\n`);
     
-    // Step 4: Build the full prompt
+    // Step 4: Build conversation history string
+    const historyText = history.length > 0
+      ? history
+          .slice(-6)  // Only use last 6 messages to keep prompt concise
+          .map(h => `${h.role === 'user' ? 'Student' : 'Advisor'}: ${h.content}`)
+          .join('\n')
+      : '';
+    
+    // Step 5: Build the full prompt
     const prompt = `
       ${SYSTEM_INSTRUCTIONS}
 
       === RELEVANT CONTEXT ===
       ${context}
       === END CONTEXT ===
+
+      ${historyText ? `=== CONVERSATION HISTORY ===
+      ${historyText}
+      === END HISTORY ===` : ''}
 
       Student Question: ${question}
     `;
