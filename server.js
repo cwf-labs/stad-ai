@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const knowledgeBase = require('./knowledgeBase');
+const { getAdvisorResponse } = require('./ragEngine');
 
 const app = express();
 app.use(express.json());
@@ -9,22 +8,26 @@ app.use(express.json());
 // Server static files (our frontend)
 app.use(express.static('public'));
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-lite",
-  systemInstruction: knowledgeBase
-});
-
 // This is the API endpoint students' messages are sent to
 app.post('/chat', async(req, res) => {
   try {
     const { message } = req.body;
-    const result = await model.generateContent(message);
-    const response = result.response.text();
-    res.json({ reply: response });
+
+    if (!message || message.trim() === '') {
+      return res.status(400).json({
+        reply: "Please type a question."
+      });
+    }
+    const response = await getAdvisorResponse(message);
+
+    // Handle both string and object responses
+    const reply = typeof response === 'string'
+      ? response
+      : response.answer;
+
+    res.json({ reply });
   } catch (error) {
-    console.log(error)
+    console.log('Server error: ', error.message)
     res.status(500).json({ reply: "Sorry, something went wrong. Please try again."})
   }
 });
