@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  # PostgreSQL with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: stadai_db
+    environment:
+      POSTGRES_USER: advisor
+      POSTGRES_PASSWORD: advisor123
+      POSTGRES_DB: stadai_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # pgAdmin - visual interface for your database
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: stadai_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@advisor.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  # Redis - for caching (we'll use this in Phase 5)
+  redis:
+    image: redis:7-alpine
+    container_name: course_advisor_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
