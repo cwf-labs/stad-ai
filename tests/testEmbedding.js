@@ -1,4 +1,4 @@
-const { generateEmbedding } = require('./embeddings');
+const { generateEmbedding } = require('../src/services/embeddingService');
 
 async function test() {
   console.log('Generating embedding for test sentence...');

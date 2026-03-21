@@ -1,4 +1,4 @@
-const { getAdvisorResponse } = require('./ragEngine');
+const { getAdvisorResponse } = require('../ragEngine');
 
 async function test() {
   const questions = [

@@ -1,4 +1,4 @@
-const { searchKnowledge } = require('./vectorSearch');
+const { searchKnowledge } = require('../vectorSearch');
 
 async function test() {
   // Test 1: Direct question

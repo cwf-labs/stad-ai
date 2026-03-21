@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client } = require('pg');
-const { generateEmbedding } = require('./embeddings');
+const { generateEmbedding } = require('./embeddingService');
 
 const SIMILARITY_THRESHOLD = 0.7;
 
