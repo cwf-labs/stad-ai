@@ -19,9 +19,9 @@
   },
   "homepage": "https://github.com/cwf-labs/stad-ai#readme",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.80.0",
     "@google/generative-ai": "^0.24.1",
     "dotenv": "^17.3.1",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "pg": "^8.20.0"
   }

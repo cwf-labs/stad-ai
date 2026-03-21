@@ -22,12 +22,13 @@ async function setupDatabase() {
     // Create knowledge_chunks table
     await client.query(`
       CREATE TABLE IF NOT EXISTS knowledge_chunks (
-      id            SERIAL PRIMARY KEY,
-      category      TEXT NOT NULL,
-      description   TEXT,
-      content       TEXT NOT NULL,
-      embedding     vector(768),
-      created_at    TIMESTAMP DEFAULT NOW()
+      id                SERIAL PRIMARY KEY,
+      category          TEXT NOT NULL,
+      semester          TEXT,
+      additional_info   TEXT,
+      content           TEXT NOT NULL,
+      embedding         vector(768),
+      created_at        TIMESTAMP DEFAULT NOW()
       );
     `);
     console.log('✅ knowledge_chunks table created');
@@ -36,8 +37,7 @@ async function setupDatabase() {
     await client.query(`
       CREATE INDEX IF NOT EXISTS knowledge_embedding_idx
       ON knowledge_chunks
-      USING ivfflat (embedding vector_cosine_ops)
-      WITH (lists = 100);
+      USING hnsw (embedding vector_cosine_ops);
     `);
     console.log('✅ Vector search index created');
 
