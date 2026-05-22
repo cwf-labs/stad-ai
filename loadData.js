@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client } = require('pg');
-const { generateEmbedding } = require('./embeddings');
+const { generateEmbedding } = require('./src/services/embeddingService');
 const ExcelJS = require('exceljs');
 
 const client = new Client({
@@ -30,7 +30,7 @@ async function loadDataIntoDatabase() {
 
     // Read Excel file
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile('./StadDataTable.xlsx');
+    await workbook.xlsx.readFile('./src/db/StadDataTable.xlsx');
     const sheet = workbook.worksheets[0];
     
     // Get headers from first row
