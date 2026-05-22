@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { searchKnowledge } = require('./vectorSearch');
+const { createProvider } = require('../providers');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -23,7 +24,7 @@ End responses by asking if there is anything else you can help with.
 Never make up information not found in the context.
 `;
 
-async function getAdvisorResponse(question, history = []) {
+async function getAdvisorResponse(question, history = [], modelKey = 'ollama') {
   try {
     // Build a context-aware search query
     // Combine last exchange + current question for better search
@@ -71,19 +72,16 @@ async function getAdvisorResponse(question, history = []) {
       Student Question: ${question}
     `;
 
-    // Step 5: Send to Gemini and get response
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-lite"
-    });
+    // Step 6: Create the right provider and generate response
+    const provider = createProvider(modelKey);
+    const answer = await provider.generateResponse(prompt, history)
 
-    const result= await model.generateContent(prompt);
-    const response = result.response.text();
-
-    // Step 6: Return answer with sources for transparency
+    // Step 7: Return answer with sources for transparency
     return {
-      answer: response,
+      answer,
       sources: relevantChunks.map(c => c.category),
-      similarity: relevantChunks.map(c => c.similarity.toFixed(3))
+      similarity: relevantChunks.map(c => c.similarity.toFixed(3)),
+      model: modelKey
     };
   } catch (error) {
     console.error('❌ RAG Engine error:', error.message);
