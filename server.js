@@ -46,6 +46,6 @@ app.post('/chat', async(req, res) => {
 });
 
 // Start the server on port 3000
-app.listen(3000, () => {
-  console.log('STAD AI Course Advisor is running at http://localhost:3000');
+app.listen(5010, () => {
+  console.log('STAD AI Course Advisor is running at http://localhost:5010');
 })
