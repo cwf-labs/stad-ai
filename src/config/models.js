@@ -1,15 +1,15 @@
 const MODELS = {
   ollama: {
     provider: 'ollama',
-    label: 'Llama 3.2 3B (Local)',
-    model: 'llama3.2:3b',
-    description: 'Runs locally. Free, private.',
+    label: 'qwen3:4b-instruct (Local - Fastest)',
+    model: 'qwen3:4b-instruct',
+    description: 'Fastest local model. Great for simple questions.',
     available: true
   },
-  gemma: {
+  gemma4: {
     provider: 'ollama',
-    label: 'Gemma 3 1B (Local - Fastest)',
-    model: 'gemma3:1b',
+    label: 'gemma4:e2b (Local)',
+    model: 'gemma4:e2b',
     description: 'Fastest local model. Great for simple questions.',
     available: true
   },
