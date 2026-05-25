@@ -26,10 +26,14 @@ Never make up information not found in the context.
 
 async function getAdvisorResponse(question, history = [], modelKey = 'ollama') {
   try {
-    // Build a context-aware search query
-    // Combine last exchange + current question for better search
-    const searchQuery = history.length > 0
-      ? `${history[history.length - 2]?.content || ''} ${question}`
+    // Build a context-aware search query using only user messages
+    const lastUserQuestion = [...history]
+      .reverse()
+      .find(h => h.role === 'user')?.content;
+
+    const searchQuery = lastUserQuestion && lastUserQuestion !== question
+      ? `${lastUserQuestion}
+${question}`
       : question;
 
     // Step 1: Search for relevant knowledge chunks
