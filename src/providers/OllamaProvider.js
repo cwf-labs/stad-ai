@@ -20,7 +20,12 @@ class OllamaProvider extends BaseLLMProvider {
       body: JSON.stringify({
         model: this.config.model,
         prompt: fullPrompt,
-        stream: false
+        stream: false,
+        system: "/no_think",
+        options: {
+          chat_template_kwargs: { enable_thinking: false },
+          num_thread: 8
+        }
       })
     });
 
